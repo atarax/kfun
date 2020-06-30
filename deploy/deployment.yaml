@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fun
+spec:
+  selector:
+    matchLabels:
+      run: fun
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        run: fun
+    spec:
+      containers:
+      - name: fun
+        image: atarax/kfun:0.2
+        ports:
+        - containerPort: 80
+        env:
+        - name: SECRET
+          valueFrom:
+            secretKeyRef:
+              name: fun-secret
+              key: secret 
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 80
